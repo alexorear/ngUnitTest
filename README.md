@@ -24,6 +24,54 @@ Angular uses the [Jasmine](https://jasmine.github.io/) framework in conjection w
 - Write test that cover class methods and DOM elements if/when possible
 - Organize test with describe blocks and group by category if possible (DOM rendering, methods and class properties).
 
+#### Common Test Mechanics
+DOM Querying
+
+```
+/* needed for querying the DOM */
+import { By } from '@angular/platform-browser';
+
+/* getting an standard  selector */
+const button = fixture.debugElement.query(By.css('button#submit'));
+/* looking at attributes */
+const isButtonDisabled = button.nativeNode.disabled;
+
+/* getting child components/directives */
+const childElement = fixture.debugElement.query(By.directive(ChildComponent));
+```
+
+`beforeEach(() => { code goes here})` - runs before each test in a describe block. Good for setting up mock values, spies, and reoccurring DOM queries
+
+spys - great for checking service method calls and stubbing out method return values
+```
+/* basic method spy - can be used to check if a method was called and what arguments it was called with */
+spyOn(service, 'methodName');
+
+/* mocking out a method a success return */
+spyOn(service, 'methodName').and.Return(expectedValue);
+
+/* mocking out method with an error */
+spyOn(service, 'methodName').and.throw(new Error('error message'));
+
+/* mocking out a method observable return */
+/* of cast a value to an observable */
+import { of } from rxjs;
+
+spyOn(service, 'methodName').and.Return(of(expectedValue));
+
+/* mocking out method with observable error */
+/* import the throwError from rxjs to throw an observable error */
+import { throwError } from 'rxjs';
+
+spyOn(service, 'methodName').and.Return(throwError({ status: 404 }));
+```
+
+Mocks/Stubs Supplied by Angular to use in testing
+```
+/* if using HttpClient */
+import { HttpClientClientTestingModule } from '@angular/common/http/testing';
+```
+
 ## Testing Resources
 Aside from this project, you can might also find the following resources helpful:
 
